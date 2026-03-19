@@ -1,4 +1,4 @@
-import { SideNav } from "@/components/nav/SideNav";
+import { AppShell } from "@/components/layout/AppShell";
 import { Providers } from "@/providers";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -31,10 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-full overflow-x-hidden bg-slate-100 text-slate-950">
         <Providers>
-          <div className="flex min-h-screen w-full flex-col lg:flex-row">
-            <SideNav />
-            <main className="flex min-w-0 flex-1 flex-col">{children}</main>
-          </div>
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>

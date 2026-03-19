@@ -2,7 +2,7 @@ export type NavigationItem = {
   name: string;
   href: string;
   icon: string;
-  current: boolean;
+  kind?: "link" | "action";
 };
 
 export type NavigationSection = {
@@ -18,25 +18,28 @@ export const navigationSections: NavigationSection[] = [
         name: "Dashboard",
         href: "/dashboard",
         icon: "dashboard",
-        current: true,
       },
-      { name: "Tracking", href: "#", icon: "tracking", current: false },
-      { name: "Audience", href: "#", icon: "audience", current: false },
-      { name: "Calendar", href: "#", icon: "calendar", current: false },
+      { name: "Tracking", href: "#", icon: "tracking" },
+      { name: "Audience", href: "#", icon: "audience" },
+      { name: "Calendar", href: "#", icon: "calendar" },
       {
         name: "Analytics & Reports",
         href: "#",
         icon: "analytics",
-        current: false,
       },
     ],
   },
   {
     title: "Support",
     items: [
-      { name: "Help", href: "#", icon: "help", current: false },
-      { name: "Settings", href: "#", icon: "settings", current: false },
-      { name: "Log out", href: "#", icon: "logout", current: false },
+      { name: "Help", href: "#", icon: "help" },
+      { name: "Settings", href: "#", icon: "settings" },
+      {
+        name: "Log out",
+        href: "/api/auth/logout",
+        icon: "logout",
+        kind: "action",
+      },
     ],
   },
 ];
