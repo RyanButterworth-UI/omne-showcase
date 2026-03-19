@@ -195,7 +195,7 @@ export function SideNav() {
       <aside
         aria-label="Primary sidebar navigation"
         className={clsx(
-          "hidden h-screen shrink-0 flex-col overflow-y-auto border-r border-white/10 bg-linear-to-b from-[#171414] via-[#151315] to-[#201d21] px-3 py-4 text-white transition-[width] duration-800 ease-out lg:flex",
+          "hidden shrink-0 self-start flex-col overflow-y-auto border-r border-white/10 bg-linear-to-b from-[#171414] via-[#151315] to-[#201d21] px-3 py-4 text-white transition-[width] duration-800 ease-out lg:sticky lg:top-0 lg:flex lg:h-screen",
           isCollapsed ? "w-20" : "w-72",
         )}
       >

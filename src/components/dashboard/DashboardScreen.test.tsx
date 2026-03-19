@@ -1,4 +1,5 @@
 import { DashboardScreen } from "@/components/dashboard/DashboardScreen";
+import { DEMO_PROFILES } from "@/lib/auth";
 import { Providers } from "@/providers";
 import { render, screen, waitFor } from "@testing-library/react";
 
@@ -164,6 +165,31 @@ describe("DashboardScreen", () => {
     expect(
       screen.getByText(/pretty-printed payload from the local express \+ postgres api/i),
     ).toBeInTheDocument();
+
+    expect(screen.getByText(/inventory lots/i).closest("article")).toHaveClass(
+      "border-sky-400/25",
+    );
+    expect(screen.getByText(/^stable$/i).closest("article")).toHaveClass(
+      "border-lime-400/25",
+    );
+  });
+
+  it("shows cleaner profile chips without the connections label", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => dashboardPayload,
+    });
+
+    render(
+      <Providers>
+        <DashboardScreen profile={DEMO_PROFILES[0]} />
+      </Providers>,
+    );
+
+    expect(await screen.findByText(/greg p\./i)).toBeInTheDocument();
+    expect(screen.getByText(/vp of product/i)).toBeInTheDocument();
+    expect(screen.getByText(/omnesoft/i)).toBeInTheDocument();
+    expect(screen.queryByText(/connections/i)).not.toBeInTheDocument();
   });
 
   it("shows the error state without retrying the failed request", async () => {
@@ -181,6 +207,9 @@ describe("DashboardScreen", () => {
       </Providers>,
     );
 
+    expect(
+      await screen.findByText(/postgres-backed api unavailable/i),
+    ).toBeInTheDocument();
     expect(
       await screen.findByText(
         /synthetic failure injected for dashboard error-handling validation/i,

@@ -37,7 +37,10 @@ describe("SideNav", () => {
   it("renders expanded navigation by default", () => {
     render(<SideNav />);
 
+    const sidebar = screen.getByLabelText(/primary sidebar navigation/i);
+
     expect(screen.getByRole("banner")).toBeInTheDocument();
+    expect(sidebar).toHaveClass("flex-col");
     expect(
       screen.getByRole("button", { name: /open menu/i }),
     ).toBeInTheDocument();
