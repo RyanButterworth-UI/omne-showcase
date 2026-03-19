@@ -37,7 +37,10 @@ describe("SideNav", () => {
   it("renders expanded navigation by default", () => {
     render(<SideNav />);
 
+    const mobileBrand = screen.getByRole("banner").querySelector("p");
+
     expect(screen.getByRole("banner")).toBeInTheDocument();
+    expect(mobileBrand).toHaveClass("text-slate-950");
     expect(
       screen.getByRole("button", { name: /open menu/i }),
     ).toBeInTheDocument();
@@ -49,13 +52,7 @@ describe("SideNav", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("General")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /tracking/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /audience/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /analytics & reports/i }),
-    ).toBeInTheDocument();
     expect(screen.getByText("Support")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /help/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /settings/i })).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /log out/i }),
     ).toBeInTheDocument();
@@ -116,8 +113,8 @@ describe("SideNav", () => {
     expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
     expect(screen.queryByText("General")).not.toBeInTheDocument();
     expect(screen.queryByText("Support")).not.toBeInTheDocument();
-    expect(screen.queryByText("Analytics & Reports")).not.toBeInTheDocument();
-    expect(screen.queryByText("Help")).not.toBeInTheDocument();
+    expect(screen.queryByText("Tracking")).not.toBeInTheDocument();
+    expect(screen.queryByText("Log out")).not.toBeInTheDocument();
   });
 
   it("expands again after a second toggle", async () => {
@@ -132,6 +129,7 @@ describe("SideNav", () => {
       screen.getByRole("button", { name: /collapse sidebar/i }),
     ).toBeInTheDocument();
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("Tracking")).toBeInTheDocument();
     expect(screen.getByText("Support")).toBeInTheDocument();
     expect(screen.getByText("Log out")).toBeInTheDocument();
   });

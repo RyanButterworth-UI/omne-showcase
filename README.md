@@ -1,36 +1,333 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Omne Showcase
 
-## Getting Started
+Omne Showcase is a small full-stack demo that pairs a Next.js 16 frontend with an Express + PostgreSQL backend.
 
-First, run the development server:
+It is designed to show:
+
+- a production-style dashboard UI
+- a tracking page using AG Grid
+- mobile-friendly AG Grid column toggling on the tracking page
+- a Postgres-backed API with seeded manufacturing data
+- Swagger/OpenAPI docs
+- a Postman collection for quick API exploration
+
+## Repository
+
+Clone with either of these:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone git@github.com:RyanButterworth-UI/omne-showcase.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```bash
+git clone https://github.com/RyanButterworth-UI/omne-showcase.git
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Then:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd omne-showcase
+pnpm install
+```
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
+- Frontend: Next.js 16, React 19, Tailwind CSS v4, TanStack Query, AG Grid
+- Backend: Express 5, TypeScript, PostgreSQL
+- Database tooling: Docker Compose, Flyway
+- API docs: Swagger UI + generated OpenAPI document
+- API client demo: Postman collection
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Layout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/` - frontend app, components, hooks, services, API fetchers
+- `BE/API/` - backend API, database access, service layer, OpenAPI generation
+- `BE/API/flyway/sql/` - schema and seed migrations
+- `postman/omne-showcase-dashboard.postman_collection.json` - Postman collection
+- `BE/API/openapi.json` - generated OpenAPI spec artifact
 
-## Deploy on Vercel
+## Quick Start
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you want the shortest path to seeing the app work locally, use three terminals.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 1. Start Postgres
+
+From the repo root:
+
+```bash
+pnpm --dir BE/API db:up
+pnpm --dir BE/API db:migrate
+```
+
+This starts PostgreSQL on `localhost:5432` and runs the Flyway migrations that create and seed the demo data.
+
+### 2. Start the backend API
+
+From the repo root:
+
+```bash
+pnpm --dir BE/API start
+```
+
+Default backend URL:
+
+```text
+http://localhost:4001
+```
+
+### 3. Start the frontend
+
+From the repo root:
+
+```bash
+pnpm dev
+```
+
+Frontend URL:
+
+```text
+http://localhost:3000
+```
+
+The root route redirects to the dashboard.
+
+## Local URLs
+
+- Frontend: `http://localhost:3000`
+- Dashboard: `http://localhost:3000/dashboard`
+- Tracking page: `http://localhost:3000/tracking`
+- Backend API: `http://localhost:4001`
+- Health check: `http://localhost:4001/health`
+- Swagger UI: `http://localhost:4001/docs`
+- OpenAPI JSON: `http://localhost:4001/openapi.json`
+
+## Backend Setup Notes
+
+The backend already has sane defaults, so it will usually start without extra env config.
+
+Default values:
+
+- `PORT=4001`
+- `ALLOWED_ORIGIN=http://localhost:3000`
+- `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/omne_dashboard`
+- `FAILURE_RATE=0.3`
+
+Important:
+
+- The API intentionally simulates failures by default with `FAILURE_RATE=0.3`.
+- This is deliberate for UI/demo purposes so loading, retry, and error states can be shown in the frontend.
+- For a smoother demo, set `FAILURE_RATE=0` before starting the backend.
+
+Example:
+
+```bash
+cd BE/API
+FAILURE_RATE=0 pnpm start
+```
+
+If you prefer, you can also create a `.env` file inside `BE/API/` with the same values.
+
+## Frontend Setup Notes
+
+The frontend fetchers default to the local backend, so no frontend env file is required for the local demo.
+
+If the API is running elsewhere, set:
+
+```text
+NEXT_PUBLIC_API_BASE_URL=http://your-api-host:4001/api
+```
+
+## Demo Login
+
+The frontend includes demo user profiles.
+
+These credentials are intentionally documented here because this is a demo app, not a production system.
+
+Password for all demo accounts:
+
+```text
+1omneDemo#2026
+```
+
+Login steps:
+
+1. Open `http://localhost:3000/login`
+2. Choose one of the demo users below or type the username manually
+3. Enter the shared password: `1omneDemo#2026`
+4. Submit the login form to enter the dashboard
+
+Important login note:
+
+- Because the API intentionally simulates failures in this demo, login may occasionally fail even when the credentials are correct.
+- If that happens, refresh the page and try again until the request succeeds.
+- For a smoother demo, run the backend with `FAILURE_RATE=0`.
+
+Demo users:
+
+- `gregp` - Greg P. - VP of Product - Omnesoft
+- `socialscientists` - Ryan Butterworth - Research and audience profile - UX wizard and part-time rockstar dev
+- `noamalper` - Noam Alper - Chief Technology Officer - Omnesoft
+
+Quick copy/paste credentials:
+
+```text
+Username: gregp
+Password: 1omneDemo#2026
+```
+
+```text
+Username: socialscientists
+Password: 1omneDemo#2026
+```
+
+```text
+Username: noamalper
+Password: 1omneDemo#2026
+```
+
+## Swagger / OpenAPI
+
+Swagger UI is already wired into the backend.
+
+Use it here when the API is running:
+
+```text
+http://localhost:4001/docs
+```
+
+Raw OpenAPI JSON:
+
+```text
+http://localhost:4001/openapi.json
+```
+
+To regenerate the checked-in OpenAPI document:
+
+```bash
+pnpm api:swagger:generate
+```
+
+That command writes the spec to:
+
+```text
+BE/API/openapi.json
+```
+
+## Postman
+
+The repo includes a ready-to-import Postman collection:
+
+```text
+postman/omne-showcase-dashboard.postman_collection.json
+```
+
+### Import steps
+
+1. Open Postman.
+2. Click `Import`.
+3. Choose `postman/omne-showcase-dashboard.postman_collection.json`.
+4. Confirm the `baseUrl` variable is set to `http://localhost:4001`.
+
+### Included requests
+
+- `GET /health`
+- `GET /api/dashboard-data`
+- `GET /api/dashboard-data?id={{dashboardId}}`
+- `GET /api/dashboard-data/list?page=1&pageSize=25`
+
+## Useful Commands
+
+### Frontend
+
+```bash
+pnpm dev
+pnpm build
+pnpm start
+pnpm lint
+pnpm test
+```
+
+### Backend
+
+```bash
+pnpm --dir BE/API dev
+pnpm --dir BE/API start
+pnpm --dir BE/API build
+pnpm --dir BE/API test
+pnpm --dir BE/API swagger:generate
+```
+
+### Database
+
+```bash
+pnpm --dir BE/API db:up
+pnpm --dir BE/API db:migrate
+pnpm --dir BE/API db:down
+```
+
+## What To Look At
+
+If another developer is reviewing the repo, these are the main entry points:
+
+- Dashboard route: `src/app/dashboard/page.tsx`
+- Tracking route: `src/app/tracking/page.tsx`
+- Dashboard UI: `src/components/dashboard/DashboardScreen.tsx`
+- Tracking UI: `src/components/tracking/TrackingScreen.tsx` including mobile column toggles for smaller screens
+- Frontend dashboard service mapping: `src/services/dashboard.ts`
+- Frontend tracking service mapping: `src/services/tracking.ts`
+- Backend app setup: `BE/API/src/app.ts`
+- Dashboard API routes: `BE/API/src/routes/data.routes.ts`
+- Backend dashboard service: `BE/API/src/services/dashboard.service.ts`
+- OpenAPI generator: `BE/API/src/openapi.ts`
+
+## Troubleshooting
+
+### The frontend loads but no data appears
+
+Check that:
+
+- Postgres is running on `localhost:5432`
+- Flyway migrations have run
+- the backend is running on `localhost:4001`
+
+### The dashboard sometimes errors even though the backend is up
+
+That may be expected if `FAILURE_RATE` is left at the default `0.3`.
+
+This is intentional in this demo so reviewers can see how the UI behaves when the API is unavailable or unstable.
+
+For a clean demo:
+
+```bash
+cd BE/API
+FAILURE_RATE=0 pnpm start
+```
+
+### CORS issues in the browser
+
+Make sure:
+
+- frontend is on `http://localhost:3000`
+- backend `ALLOWED_ORIGIN` matches that URL
+
+### Need a clean database reset
+
+```bash
+pnpm --dir BE/API db:down
+pnpm --dir BE/API db:up
+pnpm --dir BE/API db:migrate
+```
+
+## Sharing This Repo
+
+GitHub:
+
+- `git@github.com:RyanButterworth-UI/omne-showcase.git`
+- `https://github.com/RyanButterworth-UI/omne-showcase.git`
+
+When sharing with another team, send them:
+
+- the repository URL
+- the Postman collection in `postman/omne-showcase-dashboard.postman_collection.json`
+- the local startup steps from this README
+- the Swagger URL once they have the backend running
