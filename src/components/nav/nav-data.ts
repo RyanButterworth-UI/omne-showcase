@@ -19,21 +19,12 @@ export const navigationSections: NavigationSection[] = [
         href: "/dashboard",
         icon: "dashboard",
       },
-      { name: "Tracking", href: "#", icon: "tracking" },
-      { name: "Audience", href: "#", icon: "audience" },
-      { name: "Calendar", href: "#", icon: "calendar" },
-      {
-        name: "Analytics & Reports",
-        href: "#",
-        icon: "analytics",
-      },
+      { name: "Tracking", href: "/tracking", icon: "tracking" },
     ],
   },
   {
     title: "Support",
     items: [
-      { name: "Help", href: "#", icon: "help" },
-      { name: "Settings", href: "#", icon: "settings" },
       {
         name: "Log out",
         href: "/api/auth/logout",

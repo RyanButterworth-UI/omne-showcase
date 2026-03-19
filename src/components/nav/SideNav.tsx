@@ -36,7 +36,13 @@ type NavigationContentProps = {
   onNavigate?: () => void;
 };
 
-function Brand({ isCollapsed = false }: { isCollapsed?: boolean }) {
+function Brand({
+  isCollapsed = false,
+  tone = "light",
+}: {
+  isCollapsed?: boolean;
+  tone?: "light" | "dark";
+}) {
   return (
     <div
       className={clsx(
@@ -45,11 +51,16 @@ function Brand({ isCollapsed = false }: { isCollapsed?: boolean }) {
       )}
     >
       <div className="flex size-11 shrink-0 items-center justify-center rounded-sm bg-linear-to-br from-[#0973f7] to-[#3589cd] text-sm font-black tracking-[0.3em] text-[#171414] shadow-lg shadow-emerald-950/25">
-        ON
+        OM
       </div>
       {!isCollapsed ? (
         <div className="min-w-0">
-          <p className="truncate text-3xl font-semibold tracking-tight text-white">
+          <p
+            className={clsx(
+              "truncate text-3xl font-semibold tracking-tight",
+              tone === "dark" ? "text-slate-950" : "text-white",
+            )}
+          >
             Om<span className="text-[#0973f7]">ne</span>
           </p>
         </div>
@@ -146,7 +157,7 @@ export function SideNav() {
         role="banner"
         className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/70 bg-white/90 px-4 py-3 backdrop-blur lg:hidden"
       >
-        <Brand />
+        <Brand tone="dark" />
         <button
           type="button"
           aria-label="Open menu"

@@ -17,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Omne Showcase",
   description: "A dashboard shell for Omne Showcase UI work.",
+  icons: {
+    icon: "/brand-logo.svg",
+    shortcut: "/brand-logo.svg",
+    apple: "/brand-logo.svg",
+  },
 };
 
 export default function RootLayout({
