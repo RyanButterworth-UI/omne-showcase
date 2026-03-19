@@ -1,6 +1,6 @@
 import {
   AUTH_SESSION_COOKIE,
-  DEMO_USERNAME,
+  getDemoProfileByUsername,
   isValidDemoCredentials,
 } from "@/lib/auth";
 import { NextResponse } from "next/server";
@@ -11,21 +11,27 @@ export async function POST(request: Request) {
     password?: string;
     rememberMe?: boolean;
   };
+  const username = body.username ?? "";
+  const profile = getDemoProfileByUsername(username);
 
-  if (!isValidDemoCredentials(body.username ?? "", body.password ?? "")) {
+  if (!isValidDemoCredentials(username, body.password ?? "") || !profile) {
     return NextResponse.json(
-      { message: "Invalid credentials. Use the demo account provided." },
+      {
+        message:
+          "Invalid credentials. Use one of the demo usernames with the shared password.",
+      },
       { status: 401 },
     );
   }
 
   const response = NextResponse.json({
     success: true,
-    username: DEMO_USERNAME,
+    username: profile.username,
+    profile,
   });
   response.cookies.set({
     name: AUTH_SESSION_COOKIE,
-    value: DEMO_USERNAME,
+    value: profile.username,
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

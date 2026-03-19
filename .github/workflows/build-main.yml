@@ -29,5 +29,11 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Run API tests
+        run: pnpm --filter @omne-showcase/api test
+
       - name: Run lint
         run: pnpm lint
+
+      - name: Build API
+        run: pnpm --filter @omne-showcase/api build
