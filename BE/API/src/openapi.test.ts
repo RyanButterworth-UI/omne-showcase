@@ -1,15 +1,21 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 import type { Request, Response } from "express";
-import { createOpenApiDocument, createOpenApiHandler } from "./openapi.js";
+import {
+  createDocsHandler,
+  createOpenApiDocument,
+  createOpenApiHandler,
+} from "./openapi.js";
 
 function createMockResponse() {
   const state: {
     statusCode: number;
     body: unknown;
+    contentType: string | undefined;
   } = {
     statusCode: 200,
     body: undefined,
+    contentType: undefined,
   };
 
   const response = {
@@ -17,7 +23,15 @@ function createMockResponse() {
       state.statusCode = code;
       return response;
     },
+    type(value: string) {
+      state.contentType = value;
+      return response;
+    },
     json(payload: unknown) {
+      state.body = payload;
+      return response;
+    },
+    send(payload: unknown) {
       state.body = payload;
       return response;
     },
@@ -110,6 +124,25 @@ describe("createOpenApiHandler", () => {
     assert.equal(
       (state.body as { servers: Array<{ url: string }> }).servers[0]?.url,
       "https://api.example.com",
+    );
+  });
+});
+
+describe("createDocsHandler", () => {
+  test("returns a Swagger UI html page that points at the generated spec", () => {
+    const handler = createDocsHandler();
+    const { response, state } = createMockResponse();
+
+    handler({} as Request, response);
+
+    assert.equal(state.statusCode, 200);
+    assert.equal(state.contentType, "html");
+    assert.match(state.body as string, /SwaggerUIBundle/);
+    assert.match(state.body as string, /\/openapi\.json/);
+    assert.match(state.body as string, /\/docs\/assets\/swagger-ui\.css/);
+    assert.match(
+      state.body as string,
+      /\/docs\/assets\/swagger-ui-standalone-preset\.js/,
     );
   });
 });

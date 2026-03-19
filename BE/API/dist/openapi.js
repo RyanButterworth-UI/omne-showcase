@@ -1,5 +1,10 @@
+import { createRequire } from "node:module";
+import path from "node:path";
 const apiTitle = "@omne-showcase/api";
 const apiVersion = "0.1.0";
+const defaultDocsAssetPath = "/docs/assets";
+const defaultSpecPath = "/openapi.json";
+const require = createRequire(import.meta.url);
 function ref(schemaName) {
     return {
         $ref: `#/components/schemas/${schemaName}`,
@@ -404,5 +409,60 @@ export function createOpenApiHandler(options = {}) {
         response.json(createOpenApiDocument({
             serverUrl: options.serverUrl ?? resolveServerUrl(request),
         }));
+    };
+}
+export function getSwaggerUiAssetPath() {
+    const packageJsonPath = require.resolve("swagger-ui-dist/package.json");
+    return path.dirname(packageJsonPath);
+}
+function createDocsHtml({ docsAssetPath = defaultDocsAssetPath, specPath = defaultSpecPath, } = {}) {
+    return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${apiTitle} Docs</title>
+    <link rel="stylesheet" href="${docsAssetPath}/swagger-ui.css" />
+    <style>
+      html {
+        box-sizing: border-box;
+        overflow-y: scroll;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+
+      body {
+        margin: 0;
+        background: #f3f5f7;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="${docsAssetPath}/swagger-ui-bundle.js"></script>
+    <script src="${docsAssetPath}/swagger-ui-standalone-preset.js"></script>
+    <script>
+      window.ui = SwaggerUIBundle({
+        url: "${specPath}",
+        dom_id: "#swagger-ui",
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset,
+        ],
+        layout: "StandaloneLayout",
+      });
+    </script>
+  </body>
+</html>
+`;
+}
+export function createDocsHandler(options = {}) {
+    return (_request, response) => {
+        response.type("html").send(createDocsHtml(options));
     };
 }
