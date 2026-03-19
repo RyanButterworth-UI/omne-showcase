@@ -7,6 +7,12 @@ type SummaryCard = {
   label: string;
   value: string;
   detail: string;
+  tone:
+    | "inventory"
+    | "quality"
+    | "downtime"
+    | "maintenanceStable"
+    | "maintenanceAlert";
 };
 
 type TimelineItem = {
@@ -46,6 +52,7 @@ function buildSummaryCards(data: RawDashboardResponse): SummaryCard[] {
       detail: `${formatCount(
         data.shipments?.length ?? 0,
       )} shipments queued for dispatch`,
+      tone: "inventory",
     },
     {
       label: "Quality checks",
@@ -55,6 +62,7 @@ function buildSummaryCards(data: RawDashboardResponse): SummaryCard[] {
         "Latest check passed",
         "Quality review still needed",
       ),
+      tone: "quality",
     },
     {
       label: "Downtime events",
@@ -62,6 +70,7 @@ function buildSummaryCards(data: RawDashboardResponse): SummaryCard[] {
       detail: `${formatCount(
         data.productionSteps?.length ?? 0,
       )} production steps tracked`,
+      tone: "downtime",
     },
     {
       label: "Maintenance",
@@ -69,6 +78,7 @@ function buildSummaryCards(data: RawDashboardResponse): SummaryCard[] {
       detail: data.nextMaintenanceDate
         ? `Next service window ${data.nextMaintenanceDate}`
         : "No maintenance window scheduled",
+      tone: data.maintenanceRequired ? "maintenanceAlert" : "maintenanceStable",
     },
   ];
 }

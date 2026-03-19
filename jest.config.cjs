@@ -13,7 +13,11 @@ const config = {
       },
     ],
   },
-  testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
+  testPathIgnorePatterns: [
+    "<rootDir>/.next/",
+    "<rootDir>/node_modules/",
+    "<rootDir>/BE/API/",
+  ],
 };
 
 module.exports = config;

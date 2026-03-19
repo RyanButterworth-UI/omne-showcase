@@ -16,6 +16,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const iconMap = {
@@ -60,6 +62,8 @@ function NavigationContent({
   isCollapsed,
   onNavigate,
 }: NavigationContentProps) {
+  const pathname = usePathname();
+
   return (
     <nav className="flex flex-1 flex-col" aria-label="Primary navigation">
       <ul role="list" className="flex flex-1 flex-col gap-8 pt-6">
@@ -77,29 +81,50 @@ function NavigationContent({
             >
               {section.items.map((item) => {
                 const Icon = iconMap[item.icon as keyof typeof iconMap];
+                const isCurrent =
+                  item.href !== "#" &&
+                  item.kind !== "action" &&
+                  pathname === item.href;
+                const itemClassName = clsx(
+                  "group flex items-center rounded-xl text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-emerald-400/60",
+                  isCollapsed
+                    ? "justify-center px-0 py-3"
+                    : "gap-3 px-4 py-3.5",
+                  isCurrent
+                    ? "bg-white/6 text-[#58c37f]"
+                    : "text-white hover:bg-white/4 hover:text-white/90",
+                );
 
-                return (
+                return item.kind === "action" ? (
                   <li key={item.name}>
-                    <a
+                    <form action={item.href} method="post">
+                      <button
+                        type="submit"
+                        aria-label={item.name}
+                        onClick={onNavigate}
+                        className={itemClassName}
+                      >
+                        <Icon className="size-5 shrink-0" aria-hidden="true" />
+                        {!isCollapsed ? (
+                          <span className="truncate">{item.name}</span>
+                        ) : null}
+                      </button>
+                    </form>
+                  </li>
+                ) : (
+                  <li key={item.name}>
+                    <Link
                       href={item.href}
-                      aria-current={item.current ? "page" : undefined}
+                      aria-current={isCurrent ? "page" : undefined}
                       aria-label={item.name}
                       onClick={onNavigate}
-                      className={clsx(
-                        "group flex items-center rounded-xl text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-emerald-400/60",
-                        isCollapsed
-                          ? "justify-center px-0 py-3"
-                          : "gap-3 px-4 py-3.5",
-                        item.current
-                          ? "bg-white/6 text-[#58c37f]"
-                          : "text-white hover:bg-white/4 hover:text-white/90",
-                      )}
+                      className={itemClassName}
                     >
                       <Icon className="size-5 shrink-0" aria-hidden="true" />
                       {!isCollapsed ? (
                         <span className="truncate">{item.name}</span>
                       ) : null}
-                    </a>
+                    </Link>
                   </li>
                 );
               })}
@@ -170,7 +195,7 @@ export function SideNav() {
       <aside
         aria-label="Primary sidebar navigation"
         className={clsx(
-          "hidden h-screen shrink-0 flex-col overflow-y-auto border-r border-white/10 bg-linear-to-b from-[#171414] via-[#151315] to-[#201d21] px-3 py-4 text-white transition-[width] duration-800 ease-out lg:flex",
+          "hidden shrink-0 self-start flex-col overflow-y-auto border-r border-white/10 bg-linear-to-b from-[#171414] via-[#151315] to-[#201d21] px-3 py-4 text-white transition-[width] duration-800 ease-out lg:sticky lg:top-0 lg:flex lg:h-screen",
           isCollapsed ? "w-20" : "w-72",
         )}
       >

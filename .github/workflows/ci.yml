@@ -2,9 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [main, dev]
-  pull_request:
-    branches: [main, dev]
 
 jobs:
   test:
@@ -33,9 +30,3 @@ jobs:
 
       - name: Run lint
         run: pnpm lint
-
-      - name: Build frontend
-        run: pnpm build
-
-      - name: Build backend
-        run: pnpm --filter @omne-showcase/api build

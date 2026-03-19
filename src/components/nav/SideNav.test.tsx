@@ -2,6 +2,12 @@ import { SideNav } from "@/components/nav/SideNav";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+const usePathname = jest.fn();
+
+jest.mock("next/navigation", () => ({
+  usePathname: () => usePathname(),
+}));
+
 jest.mock("@heroicons/react/24/outline", () => {
   const MockIcon = ({ title }: { title?: string }) => (
     <svg aria-hidden="true" data-testid={title ?? "icon"} />
@@ -24,10 +30,17 @@ jest.mock("@heroicons/react/24/outline", () => {
 });
 
 describe("SideNav", () => {
+  beforeEach(() => {
+    usePathname.mockReturnValue("/dashboard");
+  });
+
   it("renders expanded navigation by default", () => {
     render(<SideNav />);
 
+    const sidebar = screen.getByLabelText(/primary sidebar navigation/i);
+
     expect(screen.getByRole("banner")).toBeInTheDocument();
+    expect(sidebar).toHaveClass("flex-col");
     expect(
       screen.getByRole("button", { name: /open menu/i }),
     ).toBeInTheDocument();
@@ -46,7 +59,23 @@ describe("SideNav", () => {
     expect(screen.getByText("Support")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /help/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /settings/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /log out/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /log out/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /dashboard/i })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  });
+
+  it("does not mark dashboard as current on a different route", () => {
+    usePathname.mockReturnValue("/login");
+
+    render(<SideNav />);
+
+    expect(
+      screen.getByRole("link", { name: /dashboard/i }),
+    ).not.toHaveAttribute("aria-current");
   });
 
   it("opens and closes the mobile menu from the top bar", async () => {
