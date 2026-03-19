@@ -26,18 +26,18 @@ export function DashboardScreen() {
               </h1>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
                 Here&apos;s an overview of today&apos;s manufacturing activity
-                and the proxied payload coming through the local API layer.
+                and the Postgres-backed payload coming through the local API layer.
               </p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/70 sm:px-4 sm:py-3">
-              {isFetching ? "Refreshing live data" : "Connected to local API"}
+              {isFetching ? "Refreshing database snapshot" : "Connected to Postgres-backed API"}
             </div>
           </div>
         </header>
 
         {isLoading ? (
           <div className="rounded-4xl border border-white/10 bg-black/20 p-5 text-sm text-white/70 backdrop-blur sm:p-8">
-            Loading dashboard data from the local API...
+            Loading dashboard data from the Postgres-backed API...
           </div>
         ) : null}
 
@@ -72,7 +72,7 @@ export function DashboardScreen() {
                       Operations snapshot
                     </h2>
                     <p className="mt-2 text-sm text-white/60">
-                      Service-layer mapping over the raw proxy response.
+                      Service-layer mapping over the raw database response.
                     </p>
                   </div>
                   <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
@@ -162,7 +162,7 @@ export function DashboardScreen() {
                     Raw API response
                   </h2>
                   <p className="mt-1 text-sm text-white/60">
-                    Pretty-printed payload from the local Express API.
+                    Pretty-printed payload from the local Express + Postgres API.
                   </p>
                 </div>
                 <span className="rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-sky-200">
