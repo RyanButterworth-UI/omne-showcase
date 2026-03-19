@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import { env } from "./config/env.js";
 import { getPool } from "./data/pool.js";
+import { createOpenApiHandler } from "./openapi.js";
 import { createDashboardRepository } from "./repositories/dashboard.repository.js";
 import { createDataRouter } from "./routes/data.routes.js";
 import {
@@ -48,6 +49,7 @@ export function createApp(options: CreateAppOptions = {}) {
   );
   app.use(express.json());
 
+  app.get("/openapi.json", createOpenApiHandler());
   app.get("/health", createHealthHandler(healthService));
 
   app.use(

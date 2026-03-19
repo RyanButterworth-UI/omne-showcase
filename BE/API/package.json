@@ -8,6 +8,7 @@
     "start": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "test": "node --import tsx --test",
+    "swagger:generate": "tsx src/scripts/generate-openapi.ts",
     "db:up": "docker compose -f ../../docker-compose.yml up -d postgres",
     "db:migrate": "docker compose -f ../../docker-compose.yml run --rm flyway",
     "db:down": "docker compose -f ../../docker-compose.yml down -v"
