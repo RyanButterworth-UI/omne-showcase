@@ -163,7 +163,9 @@ describe("DashboardScreen", () => {
       screen.getByText(/service-layer mapping over the raw database response/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/pretty-printed payload from the local express \+ postgres api/i),
+      screen.getByText(
+        /pretty-printed payload from the local express \+ postgres api/i,
+      ),
     ).toBeInTheDocument();
 
     expect(screen.getByText(/inventory lots/i).closest("article")).toHaveClass(
@@ -187,8 +189,8 @@ describe("DashboardScreen", () => {
     );
 
     expect(await screen.findByText(/greg p\./i)).toBeInTheDocument();
-    expect(screen.getByText(/vp of product/i)).toBeInTheDocument();
-    expect(screen.getByText(/omnesoft/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/vp of product/i)).toHaveLength(2);
+    expect(screen.getAllByText(/omnesoft/i).length).toBeGreaterThanOrEqual(2);
     expect(screen.queryByText(/connections/i)).not.toBeInTheDocument();
   });
 
