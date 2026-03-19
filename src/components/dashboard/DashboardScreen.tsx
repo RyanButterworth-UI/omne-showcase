@@ -1,6 +1,7 @@
 "use client";
 
 import { useDashboard } from "@/hooks/useDashboard";
+import type { DemoProfile } from "@/lib/auth";
 import clsx from "clsx";
 
 const toneStyles = {
@@ -9,7 +10,11 @@ const toneStyles = {
   warning: "border-amber-400/30 bg-amber-400/10 text-amber-200",
 };
 
-export function DashboardScreen() {
+type DashboardScreenProps = {
+  profile?: DemoProfile;
+};
+
+export function DashboardScreen({ profile }: DashboardScreenProps) {
   const { data, error, isLoading, isFetching } = useDashboard();
 
   return (
@@ -22,15 +27,28 @@ export function DashboardScreen() {
                 Production dashboard
               </p>
               <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-                Good morning, Yan!
+                {profile?.displayName ?? "Omne operator overview"}
               </h1>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">
-                Here&apos;s an overview of today&apos;s manufacturing activity
-                and the Postgres-backed payload coming through the local API layer.
+                {profile
+                  ? `${profile.roleLabel} at ${profile.companyLabel} • ${profile.locationLabel}`
+                  : "Here is an overview of today's manufacturing activity and the Postgres-backed payload coming through the local API layer."}
               </p>
+              {profile ? (
+                <div className="mt-4 flex flex-wrap gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/65">
+                  <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
+                    {profile.connectionsLabel}
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
+                    {profile.educationLabel}
+                  </span>
+                </div>
+              ) : null}
             </div>
             <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/70 sm:px-4 sm:py-3">
-              {isFetching ? "Refreshing database snapshot" : "Connected to Postgres-backed API"}
+              {isFetching
+                ? "Refreshing database snapshot"
+                : "Connected to Postgres-backed API"}
             </div>
           </div>
         </header>
@@ -162,7 +180,8 @@ export function DashboardScreen() {
                     Raw API response
                   </h2>
                   <p className="mt-1 text-sm text-white/60">
-                    Pretty-printed payload from the local Express + Postgres API.
+                    Pretty-printed payload from the local Express + Postgres
+                    API.
                   </p>
                 </div>
                 <span className="rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-sky-200">

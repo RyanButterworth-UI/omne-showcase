@@ -37,6 +37,19 @@ describe("LoginScreen", () => {
     expect(
       screen.getByRole("button", { name: /sign in/i }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /use username gregp/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /use username socialscientists/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /use username noamalper/i }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/vp of product/i)).toHaveLength(2);
+    expect(
+      screen.getAllByText(/westminster, maryland, united states/i),
+    ).toHaveLength(2);
   });
 
   it("shows an error message when credentials are rejected", async () => {
@@ -66,7 +79,7 @@ describe("LoginScreen", () => {
     );
   });
 
-  it("navigates to the dashboard on successful sign in", async () => {
+  it("lets a different demo profile sign in successfully", async () => {
     const user = userEvent.setup();
 
     (global.fetch as jest.Mock).mockResolvedValue({
@@ -80,10 +93,8 @@ describe("LoginScreen", () => {
       </Providers>,
     );
 
-    await user.clear(screen.getByRole("textbox", { name: /username/i }));
-    await user.type(
-      screen.getByRole("textbox", { name: /username/i }),
-      "ryanb",
+    await user.click(
+      screen.getByRole("button", { name: /use username noamalper/i }),
     );
     await user.type(screen.getByLabelText(/password/i), "1omneDemo#2026");
     await user.click(screen.getByRole("button", { name: /sign in/i }));
@@ -97,7 +108,7 @@ describe("LoginScreen", () => {
         },
         credentials: "include",
         body: JSON.stringify({
-          username: "ryanb",
+          username: "noamalper",
           password: "1omneDemo#2026",
           rememberMe: true,
         }),
@@ -105,5 +116,24 @@ describe("LoginScreen", () => {
       expect(push).toHaveBeenCalledWith("/dashboard");
       expect(refresh).toHaveBeenCalled();
     });
+  });
+
+  it("updates the selected profile details when a username pill is chosen", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Providers>
+        <LoginScreen />
+      </Providers>,
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /use username noamalper/i }),
+    );
+
+    expect(
+      screen.getByText(/chief technology officer at omnesoft/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/yeshiva university/i)).toBeInTheDocument();
   });
 });
