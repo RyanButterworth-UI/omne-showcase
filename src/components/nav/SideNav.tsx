@@ -47,7 +47,7 @@ function Brand({ isCollapsed = false }: { isCollapsed?: boolean }) {
       </div>
       {!isCollapsed ? (
         <div className="min-w-0">
-          <p className="truncate text-3xl font-semibold tracking-tight text:black md:text-white">
+          <p className="truncate text-3xl font-semibold tracking-tight text-white">
             Om<span className="text-[#0973f7]">ne</span>
           </p>
         </div>
@@ -145,7 +145,7 @@ export function SideNav() {
             role="dialog"
             aria-modal="true"
             aria-label="Mobile menu"
-            className="relative flex h-full w-[18.5rem] max-w-[88vw] flex-col overflow-y-auto border-r border-white/10 bg-linear-to-b from-[#171414] via-[#151315] to-[#201d21] px-3 py-4 text-white shadow-2xl shadow-slate-950/50"
+            className="relative flex h-full w-74 max-w-[88vw] flex-col overflow-y-auto border-r border-white/10 bg-linear-to-b from-[#171414] via-[#151315] to-[#201d21] px-3 py-4 text-white shadow-2xl shadow-slate-950/50"
           >
             <div className="flex items-center justify-between gap-3 px-2 pb-6">
               <Brand />
@@ -170,7 +170,7 @@ export function SideNav() {
       <aside
         aria-label="Primary sidebar navigation"
         className={clsx(
-          "hidden h-screen shrink-0 flex-col overflow-y-auto border-r border-white/10 bg-linear-to-b from-[#171414] via-[#151315] to-[#201d21] px-3 py-4 text-white transition-[width] duration-300 ease-out lg:flex",
+          "hidden h-screen shrink-0 flex-col overflow-y-auto border-r border-white/10 bg-linear-to-b from-[#171414] via-[#151315] to-[#201d21] px-3 py-4 text-white transition-[width] duration-800 ease-out lg:flex",
           isCollapsed ? "w-20" : "w-72",
         )}
       >
