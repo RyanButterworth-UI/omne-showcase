@@ -1,3 +1,6 @@
+packages:
+  - BE/API
+
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
