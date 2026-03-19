@@ -14,7 +14,12 @@ export const navigationSections: NavigationSection[] = [
   {
     title: "General",
     items: [
-      { name: "Dashboard", href: "#", icon: "dashboard", current: true },
+      {
+        name: "Dashboard",
+        href: "/dashboard",
+        icon: "dashboard",
+        current: true,
+      },
       { name: "Tracking", href: "#", icon: "tracking", current: false },
       { name: "Audience", href: "#", icon: "audience", current: false },
       { name: "Calendar", href: "#", icon: "calendar", current: false },

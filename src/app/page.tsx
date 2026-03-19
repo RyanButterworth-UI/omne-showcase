@@ -37,7 +37,7 @@ export default function Home() {
 
   return (
     <section className="flex min-h-screen flex-col gap-8 bg-linear-to-b from-slate-100 via-white to-slate-100 p-6 sm:p-8">
-      <header className="flex flex-col gap-4 rounded-[2rem] border border-slate-200/70 bg-white/90 p-6 shadow-sm shadow-slate-200/70 backdrop-blur sm:p-8">
+      <header className="flex flex-col gap-4 rounded-4xl border border-slate-200/70 bg-white/90 p-6 shadow-sm shadow-slate-200/70 backdrop-blur sm:p-8">
         <span className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-700">
           Workspace overview
         </span>
@@ -74,7 +74,7 @@ export default function Home() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(20rem,1fr)]">
-        <article className="rounded-[2rem] border border-slate-200/70 bg-white p-6 shadow-sm shadow-slate-200/60 sm:p-8">
+        <article className="rounded-4xl border border-slate-200/70 bg-white p-6 shadow-sm shadow-slate-200/60 sm:p-8">
           <div className="flex items-center justify-between gap-4">
             <div>
               <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
@@ -90,7 +90,7 @@ export default function Home() {
           </div>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[1.5rem] bg-slate-950 p-5 text-white">
+            <div className="rounded-3xl bg-slate-950 p-5 text-white">
               <p className="text-sm font-medium text-slate-300">
                 Release velocity
               </p>
@@ -100,7 +100,7 @@ export default function Home() {
                 delivery.
               </p>
             </div>
-            <div className="rounded-[1.5rem] bg-slate-100 p-5">
+            <div className="rounded-3xl bg-slate-100 p-5">
               <p className="text-sm font-medium text-slate-500">Open risks</p>
               <p className="mt-4 text-3xl font-semibold text-slate-950">03</p>
               <p className="mt-3 text-sm leading-6 text-slate-600">
@@ -111,7 +111,7 @@ export default function Home() {
           </div>
         </article>
 
-        <article className="rounded-[2rem] border border-slate-200/70 bg-white p-6 shadow-sm shadow-slate-200/60 sm:p-8">
+        <article className="rounded-4xl border border-slate-200/70 bg-white p-6 shadow-sm shadow-slate-200/60 sm:p-8">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
               Team activity
@@ -125,7 +125,7 @@ export default function Home() {
             {activity.map((item) => (
               <li
                 key={item.title}
-                className="rounded-[1.5rem] border border-slate-200/70 bg-slate-50 p-4"
+                className="rounded-3xl border border-slate-200/70 bg-slate-50 p-4"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
