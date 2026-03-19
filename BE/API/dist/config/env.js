@@ -2,13 +2,25 @@ import dotenv from "dotenv";
 dotenv.config();
 const defaultPort = 4001;
 const defaultOrigin = "http://localhost:3000";
+const defaultDatabaseUrl = "postgresql://postgres:postgres@localhost:5432/omne_dashboard";
+const defaultFailureRate = 0.3;
+function parsePort(value) {
+    const parsed = Number(value ?? defaultPort);
+    if (!Number.isInteger(parsed) || parsed < 1) {
+        return defaultPort;
+    }
+    return parsed;
+}
+function parseFailureRate(value) {
+    const parsed = Number(value ?? defaultFailureRate);
+    if (Number.isNaN(parsed)) {
+        return defaultFailureRate;
+    }
+    return Math.min(1, Math.max(0, parsed));
+}
 export const env = {
     allowedOrigin: process.env.ALLOWED_ORIGIN ?? defaultOrigin,
-    port: Number(process.env.PORT ?? defaultPort),
-    upstreamApiUrl: process.env.UPSTREAM_API_URL ??
-        "https://mockfast.io/backend/apitemplate/get/6RPXGV442C",
-    upstreamBearerToken: process.env.UPSTREAM_BEARER_TOKEN ?? "",
+    port: parsePort(process.env.PORT),
+    databaseUrl: process.env.DATABASE_URL ?? defaultDatabaseUrl,
+    failureRate: parseFailureRate(process.env.FAILURE_RATE),
 };
-export function hasUpstreamToken() {
-    return env.upstreamBearerToken.trim().length > 0;
-}

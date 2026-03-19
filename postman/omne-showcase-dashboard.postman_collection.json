@@ -1,0 +1,103 @@
+{
+  "info": {
+    "_postman_id": "14a53b0f-3f9e-48d3-9de4-ecce0c7be0af",
+    "name": "Omne Showcase Dashboard API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Local Postgres-backed dashboard API requests for the Omne showcase backend."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4001"
+    },
+    {
+      "key": "dashboardId",
+      "value": "18398293-a169-0c62-fc09-bd866da76a5c"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        },
+        "description": "Checks API and Postgres availability, exposes configured failure rate, and returns the seeded record count."
+      }
+    },
+    {
+      "name": "Dashboard Detail Latest",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/dashboard-data",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "dashboard-data"]
+        },
+        "description": "Returns the most recently updated nested dashboard record. This endpoint can return a simulated 503 roughly 30% of the time by default."
+      }
+    },
+    {
+      "name": "Dashboard Detail By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/dashboard-data?id={{dashboardId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "dashboard-data"],
+          "query": [
+            {
+              "key": "id",
+              "value": "{{dashboardId}}"
+            }
+          ]
+        },
+        "description": "Fetches a specific seeded dashboard record by UUID."
+      }
+    },
+    {
+      "name": "Dashboard Summary List",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/dashboard-data/list?page=1&pageSize=25",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "dashboard-data", "list"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "pageSize",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Returns a paginated summary list across the 500 seeded production orders."
+      }
+    }
+  ]
+}

@@ -7,5 +7,6 @@ export function useDashboard() {
   return useQuery({
     queryKey: ["dashboard"],
     queryFn: getDashboardViewModel,
+    retry: false,
   });
 }
