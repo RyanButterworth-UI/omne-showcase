@@ -13,9 +13,9 @@ export function DashboardScreen() {
   const { data, error, isLoading, isFetching } = useDashboard();
 
   return (
-    <section className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(20,83,45,0.35),transparent_32%),radial-gradient(circle_at_top_right,rgba(2,132,199,0.22),transparent_28%),linear-gradient(180deg,#131416_0%,#111214_45%,#1f130f_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-        <header className="rounded-4xl border border-white/10 bg-white/5 px-5 py-6 backdrop-blur sm:px-7">
+    <section className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(20,83,45,0.35),transparent_32%),radial-gradient(circle_at_top_right,rgba(2,132,199,0.22),transparent_28%),linear-gradient(180deg,#131416_0%,#111214_45%,#1f130f_100%)] px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
+        <header className="rounded-4xl border border-white/10 bg-white/5 px-4 py-4 backdrop-blur sm:px-7 sm:py-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-300/80">
@@ -29,20 +29,20 @@ export function DashboardScreen() {
                 and the proxied payload coming through the local API layer.
               </p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/70">
+            <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/70 sm:px-4 sm:py-3">
               {isFetching ? "Refreshing live data" : "Connected to local API"}
             </div>
           </div>
         </header>
 
         {isLoading ? (
-          <div className="rounded-4xl border border-white/10 bg-black/20 p-8 text-sm text-white/70 backdrop-blur">
+          <div className="rounded-4xl border border-white/10 bg-black/20 p-5 text-sm text-white/70 backdrop-blur sm:p-8">
             Loading dashboard data from the local API...
           </div>
         ) : null}
 
         {error ? (
-          <div className="rounded-4xl border border-rose-400/30 bg-rose-400/10 p-8 text-sm text-rose-100 backdrop-blur">
+          <div className="rounded-4xl border border-rose-400/30 bg-rose-400/10 p-5 text-sm text-rose-100 backdrop-blur sm:p-8">
             {(error as Error).message}
           </div>
         ) : null}
@@ -53,10 +53,10 @@ export function DashboardScreen() {
               {data.summaryCards.map((card) => (
                 <article
                   key={card.label}
-                  className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] p-5 shadow-lg shadow-black/20 backdrop-blur"
+                  className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] p-4 shadow-lg shadow-black/20 backdrop-blur sm:p-5"
                 >
                   <p className="text-sm text-white/65">{card.label}</p>
-                  <p className="mt-5 text-4xl font-semibold tracking-tight">
+                  <p className="mt-4 text-4xl font-semibold tracking-tight sm:mt-5">
                     {card.value}
                   </p>
                   <p className="mt-3 text-sm text-white/60">{card.detail}</p>
@@ -64,8 +64,8 @@ export function DashboardScreen() {
               ))}
             </section>
 
-            <section className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-              <article className="rounded-4xl border border-white/10 bg-black/20 p-6 backdrop-blur">
+            <section className="grid gap-4 sm:gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+              <article className="rounded-4xl border border-white/10 bg-black/20 p-4 backdrop-blur sm:p-6">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-semibold tracking-tight">
@@ -80,8 +80,8 @@ export function DashboardScreen() {
                   </span>
                 </div>
 
-                <dl className="mt-6 grid gap-4 md:grid-cols-2">
-                  <div className="rounded-[1.4rem] border border-white/8 bg-white/4 p-4">
+                <dl className="mt-5 grid gap-3 sm:mt-6 sm:gap-4 md:grid-cols-2">
+                  <div className="rounded-[1.4rem] border border-white/8 bg-white/4 p-3 sm:p-4">
                     <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
                       Location
                     </dt>
@@ -89,7 +89,7 @@ export function DashboardScreen() {
                       {data.location || "No location details returned"}
                     </dd>
                   </div>
-                  <div className="rounded-[1.4rem] border border-white/8 bg-white/4 p-4">
+                  <div className="rounded-[1.4rem] border border-white/8 bg-white/4 p-3 sm:p-4">
                     <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
                       Production
                     </dt>
@@ -97,7 +97,7 @@ export function DashboardScreen() {
                       {data.production || "No production details returned"}
                     </dd>
                   </div>
-                  <div className="rounded-[1.4rem] border border-white/8 bg-white/4 p-4">
+                  <div className="rounded-[1.4rem] border border-white/8 bg-white/4 p-3 sm:p-4">
                     <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
                       Team
                     </dt>
@@ -105,7 +105,7 @@ export function DashboardScreen() {
                       {data.team || "No operator details returned"}
                     </dd>
                   </div>
-                  <div className="rounded-[1.4rem] border border-white/8 bg-white/4 p-4">
+                  <div className="rounded-[1.4rem] border border-white/8 bg-white/4 p-3 sm:p-4">
                     <dt className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
                       Status
                     </dt>
@@ -115,7 +115,7 @@ export function DashboardScreen() {
                   </div>
                 </dl>
 
-                <div className="mt-4 rounded-[1.4rem] border border-white/8 bg-white/4 p-4">
+                <div className="mt-4 rounded-[1.4rem] border border-white/8 bg-white/4 p-3 sm:p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
                     Quality and maintenance
                   </p>
@@ -126,7 +126,7 @@ export function DashboardScreen() {
                 </div>
               </article>
 
-              <article className="rounded-4xl border border-white/10 bg-black/20 p-6 backdrop-blur">
+              <article className="rounded-4xl border border-white/10 bg-black/20 p-4 backdrop-blur sm:p-6">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-semibold tracking-tight">
@@ -138,12 +138,12 @@ export function DashboardScreen() {
                   </div>
                 </div>
 
-                <ul role="list" className="mt-6 space-y-3">
+                <ul role="list" className="mt-5 space-y-3 sm:mt-6">
                   {data.activity.map((item) => (
                     <li
                       key={`${item.label}-${item.meta}`}
                       className={clsx(
-                        "rounded-[1.4rem] border p-4",
+                        "rounded-[1.4rem] border p-3 sm:p-4",
                         toneStyles[item.tone],
                       )}
                     >
@@ -155,7 +155,7 @@ export function DashboardScreen() {
               </article>
             </section>
 
-            <article className="rounded-4xl border border-white/10 bg-black/25 p-6 shadow-2xl shadow-black/20 backdrop-blur">
+            <article className="rounded-4xl border border-white/10 bg-black/25 p-4 shadow-2xl shadow-black/20 backdrop-blur sm:p-6">
               <div className="flex flex-col gap-2 border-b border-white/10 pb-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="text-xl font-semibold tracking-tight">
@@ -170,7 +170,7 @@ export function DashboardScreen() {
                 </span>
               </div>
 
-              <pre className="mt-5 max-h-152 overflow-auto rounded-3xl border border-white/8 bg-[#0a0e12] p-5 text-xs leading-6 text-emerald-100 sm:text-sm">
+              <pre className="mt-4 max-h-152 overflow-auto rounded-3xl border border-white/8 bg-[#0a0e12] p-3 text-xs leading-6 text-emerald-100 sm:mt-5 sm:p-5 sm:text-sm">
                 {JSON.stringify(data.rawResponse, null, 2)}
               </pre>
             </article>
