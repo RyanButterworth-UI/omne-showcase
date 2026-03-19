@@ -9,7 +9,48 @@ import {
 } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import clsx from "clsx";
-import { startTransition, useDeferredValue, useState } from "react";
+import { startTransition, useDeferredValue, useEffect, useState } from "react";
+
+type TrackingColumnKey =
+  | "workOrder"
+  | "product"
+  | "plant"
+  | "line"
+  | "machine"
+  | "status"
+  | "priority"
+  | "qualityStatus"
+  | "maintenanceStatus"
+  | "oeeLabel"
+  | "country"
+  | "updatedAtLabel";
+
+const defaultMobileColumns: TrackingColumnKey[] = [
+  "workOrder",
+  "product",
+  "status",
+  "priority",
+  "oeeLabel",
+];
+
+const mobileColumnOptions: Array<{
+  key: TrackingColumnKey;
+  label: string;
+  locked?: boolean;
+}> = [
+  { key: "workOrder", label: "Work order", locked: true },
+  { key: "product", label: "Product" },
+  { key: "plant", label: "Plant" },
+  { key: "line", label: "Line" },
+  { key: "machine", label: "Machine" },
+  { key: "status", label: "Status" },
+  { key: "priority", label: "Priority" },
+  { key: "qualityStatus", label: "Quality" },
+  { key: "maintenanceStatus", label: "Maintenance" },
+  { key: "oeeLabel", label: "OEE" },
+  { key: "country", label: "Country" },
+  { key: "updatedAtLabel", label: "Updated" },
+];
 
 const trackingTheme = themeQuartz.withParams({
   backgroundColor: "#0a0e12",
@@ -65,7 +106,7 @@ function OeeCell({ value }: ICellRendererParams<TrackingRow, string>) {
   return <span className="font-semibold text-sky-200">{value}</span>;
 }
 
-const columnDefs: ColDef<TrackingRow>[] = [
+const columnDefs: Array<ColDef<TrackingRow> & { field: TrackingColumnKey }> = [
   { field: "workOrder", headerName: "Work order", minWidth: 150 },
   { field: "product", headerName: "Product", minWidth: 180, flex: 1.1 },
   { field: "plant", headerName: "Plant", minWidth: 180 },
@@ -112,6 +153,9 @@ const columnDefs: ColDef<TrackingRow>[] = [
 export function TrackingScreen() {
   const [page, setPage] = useState(1);
   const [quickFilter, setQuickFilter] = useState("");
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [visibleMobileColumns, setVisibleMobileColumns] =
+    useState(defaultMobileColumns);
   const deferredQuickFilter = useDeferredValue(quickFilter);
   const pageSize = 25;
   const { data, error, isLoading, isFetching } = useTracking({
@@ -119,8 +163,38 @@ export function TrackingScreen() {
     pageSize,
   });
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+
+    const syncViewport = () => {
+      setIsMobileViewport(mediaQuery.matches);
+    };
+
+    syncViewport();
+    mediaQuery.addEventListener("change", syncViewport);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncViewport);
+    };
+  }, []);
+
   const canGoBack = page > 1;
   const canGoForward = data ? page < data.totalPages : false;
+  const activeColumnDefs = isMobileViewport
+    ? columnDefs.filter((column) => visibleMobileColumns.includes(column.field))
+    : columnDefs;
+
+  function toggleMobileColumn(columnKey: TrackingColumnKey) {
+    setVisibleMobileColumns((currentColumns) => {
+      if (columnKey === "workOrder") {
+        return currentColumns;
+      }
+
+      return currentColumns.includes(columnKey)
+        ? currentColumns.filter((item) => item !== columnKey)
+        : [...currentColumns, columnKey];
+    });
+  }
 
   return (
     <section className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(8,145,178,0.22),transparent_30%),radial-gradient(circle_at_top_right,rgba(37,99,235,0.24),transparent_28%),linear-gradient(180deg,#09111b_0%,#0b1320_44%,#160f1f_100%)] px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
@@ -205,6 +279,54 @@ export function TrackingScreen() {
             </div>
           </div>
 
+          <div className="mt-4 border-b border-white/10 pb-4 lg:hidden">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/50">
+                  Mobile columns
+                </p>
+                <p className="mt-1 text-sm text-white/60">
+                  Toggle what the grid shows on smaller screens.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setVisibleMobileColumns(defaultMobileColumns)}
+                className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:border-white/20 hover:bg-white/10"
+              >
+                Reset
+              </button>
+            </div>
+
+            <div
+              className="mt-4 flex flex-wrap gap-2"
+              data-testid="mobile-column-toggles"
+            >
+              {mobileColumnOptions.map((option) => {
+                const isVisible = visibleMobileColumns.includes(option.key);
+
+                return (
+                  <button
+                    key={option.key}
+                    type="button"
+                    onClick={() => toggleMobileColumn(option.key)}
+                    disabled={option.locked}
+                    aria-pressed={isVisible}
+                    className={clsx(
+                      "rounded-full border px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition",
+                      isVisible
+                        ? "border-sky-400/35 bg-sky-400/12 text-sky-100"
+                        : "border-white/10 bg-white/6 text-white/65",
+                      option.locked && "cursor-default opacity-75",
+                    )}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {isLoading ? (
             <div className="mt-5 rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-white/70">
               Loading tracked production orders...
@@ -223,7 +345,7 @@ export function TrackingScreen() {
                 <div className="h-160 w-full" data-testid="tracking-grid">
                   <AgGridReact<TrackingRow>
                     rowData={data.rows}
-                    columnDefs={columnDefs}
+                    columnDefs={activeColumnDefs}
                     theme={trackingTheme}
                     quickFilterText={deferredQuickFilter}
                     animateRows
