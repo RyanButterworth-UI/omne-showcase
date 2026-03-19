@@ -19,7 +19,7 @@ export const navigationSections: NavigationSection[] = [
         href: "/dashboard",
         icon: "dashboard",
       },
-      { name: "Tracking", href: "#", icon: "tracking" },
+      { name: "Tracking", href: "/tracking", icon: "tracking" },
       { name: "Audience", href: "#", icon: "audience" },
       { name: "Calendar", href: "#", icon: "calendar" },
       {

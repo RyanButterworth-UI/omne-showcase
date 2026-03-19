@@ -1,4 +1,5 @@
 import { DashboardScreen } from "@/components/dashboard/DashboardScreen";
+import { DEMO_PROFILES } from "@/lib/auth";
 import { Providers } from "@/providers";
 import { render, screen, waitFor } from "@testing-library/react";
 
@@ -164,6 +165,30 @@ describe("DashboardScreen", () => {
     expect(
       screen.getByText(/pretty-printed payload from the local express \+ postgres api/i),
     ).toBeInTheDocument();
+    expect(screen.getByText(/inventory lots/i).closest("article")).toHaveClass(
+      "border-sky-400/25",
+    );
+    expect(screen.getByText(/^stable$/i).closest("article")).toHaveClass(
+      "border-lime-400/25",
+    );
+  });
+
+  it("shows cleaner profile chips without the connections label", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => dashboardPayload,
+    });
+
+    render(
+      <Providers>
+        <DashboardScreen profile={DEMO_PROFILES[0]} />
+      </Providers>,
+    );
+
+    expect(await screen.findByText(/greg p\./i)).toBeInTheDocument();
+    expect(screen.getAllByText(/vp of product/i)).toHaveLength(2);
+    expect(screen.getAllByText(/omnesoft/i).length).toBeGreaterThanOrEqual(2);
+    expect(screen.queryByText(/connections/i)).not.toBeInTheDocument();
   });
 
   it("shows the error state without retrying the failed request", async () => {
@@ -182,6 +207,9 @@ describe("DashboardScreen", () => {
     );
 
     expect(
+      await screen.findByText(/postgres-backed api unavailable/i),
+    ).toBeInTheDocument();
+    expect(
       await screen.findByText(
         /synthetic failure injected for dashboard error-handling validation/i,
       ),
@@ -192,3 +220,54 @@ describe("DashboardScreen", () => {
     });
   });
 });
+
+*** Add File: /Users/ryanbutterworth/omne-showcase/src/api/tracking.ts
+export type RawTrackingItem = {
+  id: string;
+  plantName: string;
+  country: string;
+  productionLineName: string;
+  machineName: string;
+  workOrderNumber: string;
+  productName: string;
+  status: string;
+  priority: string;
+  updatedAt: string;
+  oeePercent: number;
+  qualityCheckPassed: boolean;
+  maintenanceRequired: boolean;
+};
+
+export type RawTrackingResponse = {
+  items: RawTrackingItem[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+const trackingApiBaseUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4001/api";
+
+type FetchTrackingPageInput = {
+  page: number;
+  pageSize: number;
+};
+
+export async function fetchTrackingResponse({
+  page,
+  pageSize,
+}: FetchTrackingPageInput): Promise<RawTrackingResponse> {
+  const searchParams = new URLSearchParams({
+    page: String(page),
+    pageSize: String(pageSize),
+  });
+
+  const response = await fetch(
+    `${trackingApiBaseUrl}/dashboard-data/list?${searchParams.toString()}`,
+    {
+      headers: {
+        Accept: "application/json",
+      },
+    },
+  );

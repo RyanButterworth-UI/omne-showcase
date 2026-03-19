@@ -10,12 +10,53 @@ const toneStyles = {
   warning: "border-amber-400/30 bg-amber-400/10 text-amber-200",
 };
 
+const summaryCardStyles = {
+  inventory:
+    "border-sky-400/25 bg-[linear-gradient(180deg,rgba(14,165,233,0.2),rgba(15,23,42,0.42))] shadow-sky-950/20",
+  quality:
+    "border-emerald-400/25 bg-[linear-gradient(180deg,rgba(52,211,153,0.18),rgba(12,18,18,0.42))] shadow-emerald-950/20",
+  downtime:
+    "border-amber-400/25 bg-[linear-gradient(180deg,rgba(251,191,36,0.18),rgba(26,18,12,0.42))] shadow-amber-950/20",
+  maintenanceStable:
+    "border-lime-400/25 bg-[linear-gradient(180deg,rgba(132,204,22,0.18),rgba(12,18,14,0.42))] shadow-lime-950/20",
+  maintenanceAlert:
+    "border-orange-400/25 bg-[linear-gradient(180deg,rgba(251,146,60,0.18),rgba(26,14,10,0.42))] shadow-orange-950/20",
+};
+
+const apiStatusStyles = {
+  success: {
+    badge: "border-emerald-400/30 bg-emerald-400/10 text-emerald-100",
+    dot: "bg-emerald-500",
+    pulse: "bg-emerald-500/55",
+  },
+  loading: {
+    badge: "border-amber-400/30 bg-amber-400/10 text-amber-100",
+    dot: "bg-amber-400",
+    pulse: "bg-amber-400/55",
+  },
+  error: {
+    badge: "border-rose-400/30 bg-rose-400/10 text-rose-100",
+    dot: "bg-rose-400",
+    pulse: "bg-rose-400/55",
+  },
+};
+
 type DashboardScreenProps = {
   profile?: DemoProfile;
 };
 
 export function DashboardScreen({ profile }: DashboardScreenProps) {
   const { data, error, isLoading, isFetching } = useDashboard();
+  const apiStatus = error
+    ? "error"
+    : isLoading || isFetching
+      ? "loading"
+      : "success";
+  const apiStatusLabel = error
+    ? "Postgres-backed API unavailable"
+    : isLoading || isFetching
+      ? "Refreshing Postgres-backed API"
+      : "Connected to Postgres-backed API";
 
   return (
     <section className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(20,83,45,0.35),transparent_32%),radial-gradient(circle_at_top_right,rgba(2,132,199,0.22),transparent_28%),linear-gradient(180deg,#131416_0%,#111214_45%,#1f130f_100%)] px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
@@ -37,18 +78,37 @@ export function DashboardScreen({ profile }: DashboardScreenProps) {
               {profile ? (
                 <div className="mt-4 flex flex-wrap gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/65">
                   <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
-                    {profile.connectionsLabel}
+                    {profile.roleLabel}
                   </span>
                   <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
-                    {profile.educationLabel}
+                    {profile.companyLabel}
                   </span>
                 </div>
               ) : null}
             </div>
-            <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-2 text-sm text-white/70 sm:px-4 sm:py-3">
-              {isFetching
-                ? "Refreshing database snapshot"
-                : "Connected to Postgres-backed API"}
+            <div
+              className={clsx(
+                "flex items-center gap-3 rounded-2xl border px-3 py-2 text-sm sm:px-4 sm:py-3",
+                apiStatusStyles[apiStatus].badge,
+              )}
+            >
+              <span className="relative flex size-3 shrink-0 items-center justify-center">
+                <span
+                  aria-hidden="true"
+                  className={clsx(
+                    "absolute inline-flex size-3 rounded-full animate-ping",
+                    apiStatusStyles[apiStatus].pulse,
+                  )}
+                />
+                <span
+                  aria-hidden="true"
+                  className={clsx(
+                    "relative inline-flex size-2.5 rounded-full",
+                    apiStatusStyles[apiStatus].dot,
+                  )}
+                />
+              </span>
+              <span>{apiStatusLabel}</span>
             </div>
           </div>
         </header>
@@ -71,13 +131,16 @@ export function DashboardScreen({ profile }: DashboardScreenProps) {
               {data.summaryCards.map((card) => (
                 <article
                   key={card.label}
-                  className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] p-4 shadow-lg shadow-black/20 backdrop-blur sm:p-5"
+                  className={clsx(
+                    "rounded-[1.6rem] border p-4 shadow-lg backdrop-blur sm:p-5",
+                    summaryCardStyles[card.tone],
+                  )}
                 >
-                  <p className="text-sm text-white/65">{card.label}</p>
+                  <p className="text-sm text-white/72">{card.label}</p>
                   <p className="mt-4 text-4xl font-semibold tracking-tight sm:mt-5">
                     {card.value}
                   </p>
-                  <p className="mt-3 text-sm text-white/60">{card.detail}</p>
+                  <p className="mt-3 text-sm text-white/68">{card.detail}</p>
                 </article>
               ))}
             </section>
