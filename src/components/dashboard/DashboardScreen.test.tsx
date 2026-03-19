@@ -167,6 +167,7 @@ describe("DashboardScreen", () => {
         /pretty-printed payload from the local express \+ postgres api/i,
       ),
     ).toBeInTheDocument();
+
     expect(screen.getByText(/inventory lots/i).closest("article")).toHaveClass(
       "border-sky-400/25",
     );

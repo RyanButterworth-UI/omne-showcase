@@ -37,10 +37,10 @@ describe("SideNav", () => {
   it("renders expanded navigation by default", () => {
     render(<SideNav />);
 
-    const mobileBrand = screen.getByRole("banner").querySelector("p");
+    const sidebar = screen.getByLabelText(/primary sidebar navigation/i);
 
     expect(screen.getByRole("banner")).toBeInTheDocument();
-    expect(mobileBrand).toHaveClass("text-slate-950");
+    expect(sidebar).toHaveClass("flex-col");
     expect(
       screen.getByRole("button", { name: /open menu/i }),
     ).toBeInTheDocument();
