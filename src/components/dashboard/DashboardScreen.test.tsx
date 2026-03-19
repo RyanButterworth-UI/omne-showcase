@@ -163,7 +163,9 @@ describe("DashboardScreen", () => {
       screen.getByText(/service-layer mapping over the raw database response/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/pretty-printed payload from the local express \+ postgres api/i),
+      screen.getByText(
+        /pretty-printed payload from the local express \+ postgres api/i,
+      ),
     ).toBeInTheDocument();
     expect(screen.getByText(/inventory lots/i).closest("article")).toHaveClass(
       "border-sky-400/25",
@@ -220,54 +222,3 @@ describe("DashboardScreen", () => {
     });
   });
 });
-
-*** Add File: /Users/ryanbutterworth/omne-showcase/src/api/tracking.ts
-export type RawTrackingItem = {
-  id: string;
-  plantName: string;
-  country: string;
-  productionLineName: string;
-  machineName: string;
-  workOrderNumber: string;
-  productName: string;
-  status: string;
-  priority: string;
-  updatedAt: string;
-  oeePercent: number;
-  qualityCheckPassed: boolean;
-  maintenanceRequired: boolean;
-};
-
-export type RawTrackingResponse = {
-  items: RawTrackingItem[];
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-};
-
-const trackingApiBaseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4001/api";
-
-type FetchTrackingPageInput = {
-  page: number;
-  pageSize: number;
-};
-
-export async function fetchTrackingResponse({
-  page,
-  pageSize,
-}: FetchTrackingPageInput): Promise<RawTrackingResponse> {
-  const searchParams = new URLSearchParams({
-    page: String(page),
-    pageSize: String(pageSize),
-  });
-
-  const response = await fetch(
-    `${trackingApiBaseUrl}/dashboard-data/list?${searchParams.toString()}`,
-    {
-      headers: {
-        Accept: "application/json",
-      },
-    },
-  );

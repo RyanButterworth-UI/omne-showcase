@@ -30,6 +30,18 @@ cd omne-showcase
 pnpm install
 ```
 
+## Git Workflow
+
+This repo was worked in a way that makes the build process easy to review.
+
+- `main` is the protected branch.
+- `dev` is the active working branch for ongoing implementation.
+- Feature work was built in branches and committed incrementally.
+- The commit history is intentionally kept strong and readable so reviewers can inspect how the app was assembled over time.
+- Branch history has been kept intact so the implementation path is visible, not flattened away.
+
+If you want to review how the project evolved, start with the branch history and commit log rather than only looking at the final file state.
+
 ## Stack
 
 - Frontend: Next.js 16, React 19, Tailwind CSS v4, TanStack Query, AG Grid
@@ -91,6 +103,21 @@ http://localhost:3000
 
 The root route redirects to the dashboard.
 
+## Demo Flow
+
+If you want the fastest review path, use this order:
+
+1. Start Postgres and run migrations.
+2. Start the backend API.
+3. Start the frontend.
+4. Open `http://localhost:3000/login`.
+5. Sign in with one of the demo users below.
+6. Review the dashboard and watch the API-backed UI states.
+7. Open the tracking page and test the AG Grid interactions.
+8. On mobile or a narrow viewport, use the tracking page column toggles.
+9. Open Swagger UI.
+10. Import the Postman collection and run the included requests.
+
 ## Local URLs
 
 - Frontend: `http://localhost:3000`
@@ -135,6 +162,23 @@ If the API is running elsewhere, set:
 
 ```text
 NEXT_PUBLIC_API_BASE_URL=http://your-api-host:4001/api
+```
+
+## Environment Examples
+
+### Frontend
+
+```text
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4001/api
+```
+
+### Backend
+
+```text
+PORT=4001
+ALLOWED_ORIGIN=http://localhost:3000
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/omne_dashboard
+FAILURE_RATE=0.3
 ```
 
 ## Demo Login
@@ -184,6 +228,15 @@ Password: 1omneDemo#2026
 Username: noamalper
 Password: 1omneDemo#2026
 ```
+
+## Known Demo Notes
+
+- The API intentionally simulates failures when `FAILURE_RATE=0.3`.
+- This is part of the showcase so the UI can demonstrate loading, error, and retry behavior.
+- Login may occasionally fail for the same reason; refresh and try again.
+- Only the Dashboard and Tracking routes are intentionally wired in this demo.
+- The tracking page includes mobile-friendly column toggles for smaller screens.
+- The auth experience is intentionally lightweight because this is a demo app.
 
 ## Swagger / OpenAPI
 
@@ -265,6 +318,34 @@ pnpm --dir BE/API db:migrate
 pnpm --dir BE/API db:down
 ```
 
+## Architecture Summary
+
+The repo follows a clear frontend and backend layering pattern.
+
+### Frontend flow
+
+- Component
+- Hook
+- Service
+- API fetcher
+- Backend endpoint
+
+Examples:
+
+- Dashboard: `src/components/dashboard/DashboardScreen.tsx` -> `src/hooks/useDashboard.ts` -> `src/services/dashboard.ts` -> `src/api/dashboard.ts`
+- Tracking: `src/components/tracking/TrackingScreen.tsx` -> `src/hooks/useTracking.ts` -> `src/services/tracking.ts` -> `src/api/tracking.ts`
+
+### Backend flow
+
+- Route
+- Service
+- Repository
+- PostgreSQL
+
+Example:
+
+- `BE/API/src/routes/data.routes.ts` -> `BE/API/src/services/dashboard.service.ts` -> `BE/API/src/repositories/dashboard.repository.ts`
+
 ## What To Look At
 
 If another developer is reviewing the repo, these are the main entry points:
@@ -279,6 +360,18 @@ If another developer is reviewing the repo, these are the main entry points:
 - Dashboard API routes: `BE/API/src/routes/data.routes.ts`
 - Backend dashboard service: `BE/API/src/services/dashboard.service.ts`
 - OpenAPI generator: `BE/API/src/openapi.ts`
+
+## Reviewer Checklist
+
+- Can start Postgres, migrate the database, and run the API.
+- Can start the frontend and reach the login page.
+- Can sign in with a demo user.
+- Can load the dashboard successfully.
+- Can see the error handling when the simulated API failure occurs.
+- Can open the tracking page and use AG Grid sorting/filtering.
+- Can use the mobile column toggles on the tracking page.
+- Can open Swagger UI at `/docs`.
+- Can import the Postman collection and hit the API.
 
 ## Troubleshooting
 
